@@ -1,0 +1,18 @@
+FROM ruby:2.6.6
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+    apt-get install -y cmake
+
+RUN curl -L -o - https://github.com/DarthSim/hivemind/releases/download/v1.0.6/hivemind-v1.0.6-linux-arm64.gz | gunzip > /usr/local/bin/hivemind && \	
+    chmod u+x /usr/local/bin/hivemind
+
+WORKDIR /usr/src/app
+
+RUN gem install bundler
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+ENTRYPOINT cd /usr/src/app && hivemind -p 3021 ./Procfile
+
