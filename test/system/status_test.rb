@@ -15,12 +15,6 @@ module Orchestrator
       }.to_json
       assert_equal expected, last_response.body
     end
-
-    def test_next_iteration_no_job
-      get "/iterations/next"
-      assert_equal 404, last_response.status
-      assert_equal Hash.new.to_json, last_response.body
-    end
   end
 end
 

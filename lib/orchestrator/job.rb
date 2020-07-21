@@ -11,15 +11,19 @@ module Orchestrator
       @id = SecureRandom.uuid
     end
 
+    def to_s
+      "#{id} | #{type}: #{iteration_uuid}"
+    end
+
     def to_json
       {
+        id: id,
         job_type: type,
-        iteration_uuid: iteration_uuid,
         language: language,
         exercise: exercise,
         s3_uri: s3_uri,
         container_version: nil,
-        execution_timeou: nil
+        execution_timeout: nil
       }
     end
 

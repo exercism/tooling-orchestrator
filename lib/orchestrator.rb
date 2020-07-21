@@ -12,7 +12,7 @@ loader.setup
 
 module Orchestrator
   def self.application
-    Orchestrator::Application.instance
+    @application ||= Orchestrator::Application.new
   end
 end
 
