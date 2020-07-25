@@ -1,86 +1,65 @@
 require 'test_helper'
 
 module Orchestrator
-  class QueueTest < Minitest::Test
-    def test_size
-      job_1 = Job.new(nil, nil, nil, nil, nil)
-      job_2 = Job.new(nil, nil, nil, nil, nil)
+  class RetrieveNextJobTest < Minitest::Test
+    def test_full_flow
+      Timecop.freeze do
+        job_id = SecureRandom.uuid
+        job_type = SecureRandom.uuid
+        language = SecureRandom.uuid
+        exercise = SecureRandom.uuid
+        s3_uri = SecureRandom.uuid
 
-      queue = Queue.new
-      assert_equal 0, queue.size
-      assert_equal 0, queue.pending_size
-      assert_equal 0, queue.locked_size
+        client = mock
+        query_params = {
+          table_name: "boffin_jobs-test",
+          index_name: "job_status",
+          expression_attribute_names: { "#JS": "job_status" }, 
+          expression_attribute_values: { ":js": "pending" }, 
+          key_condition_expression: "#JS = :js",
+          limit: 1,
+        }
+        client.expects(:query).
+              with(query_params).
+              returns(mock(items: ['id' => job_id]))
 
-      queue.enqueue!(job_1)
-      assert_equal 1, queue.size
-      assert_equal 1, queue.pending_size
-      assert_equal 0, queue.locked_size
+        update_params = {
+          table_name: "boffin_jobs-test",
+          key: { id: job_id }, 
+          expression_attribute_names: {
+            "#JS": "job_status",
+            "#LU": "locked_until"
+          }, 
+          expression_attribute_values: { 
+            ":js": "locked",
+            ":lu": Time.now.to_i + 15
+          }, 
+          update_expression: "SET #JS = :js, #LU = :lu",
+          return_values: "ALL_NEW"
+        }
+        client.expects(:update_item).
+          with(update_params).
+          returns(mock(attributes: {
+            'type' => job_type,
+            'id' => job_id,
+            'language' => language,
+            'exercise' => exercise,
+            's3_uri' => s3_uri
+          }))
 
-      queue.enqueue!(job_2)
-      assert_equal 2, queue.size
-      assert_equal 2, queue.pending_size
-      assert_equal 0, queue.locked_size
-
-      queue.lock_next_job!
-      assert_equal 2, queue.size
-      assert_equal 1, queue.pending_size
-      assert_equal 1, queue.locked_size
-
-      queue.take_job!(job_1.id)
-      assert_equal 1, queue.size
-      assert_equal 1, queue.pending_size
-      assert_equal 0, queue.locked_size
-    end
-
-    def test_enqueue!
-      job = Job.new(nil, nil, nil, nil, nil)
-
-      queue = Queue.new
-      queue.enqueue!(job)
-      assert_equal 1, queue.pending_size
-      assert_equal 0, queue.locked_size
-    end
-
-    def test_lock_next_job!
-      job = Job.new(nil, nil, nil, nil, nil)
-
-      queue = Queue.new
-      queue.enqueue!(job)
-      queue.lock_next_job!
-      assert_equal 0, queue.pending_size
-      assert_equal 1, queue.locked_size
-    end
-
-    def test_take_job_from_pending!
-      job = Job.new(nil, nil, nil, nil, nil)
-
-      queue = Queue.new
-      queue.enqueue!(job)
-      assert_equal job, queue.take_job!(job.id)
-      assert_equal 0, queue.pending_size
-      assert_equal 0, queue.locked_size
-    end
-
-    def test_take_job_from_locked!
-      job = Job.new(nil, nil, nil, nil, nil)
-
-      queue = Queue.new
-      queue.enqueue!(job)
-      queue.lock_next_job!
-      assert_equal job, queue.take_job!(job.id)
-      assert_equal 0, queue.pending_size
-      assert_equal 0, queue.locked_size
-    end
-
-    def test_take_job_fails_if_missing
-      job = Job.new(nil, nil, nil, nil, nil)
-
-      queue = Queue.new
-      queue.enqueue!(job)
-      queue.lock_next_job!
-      assert_raises Queue::MissingJobError do
-        queue.take_job!("foobar")
+        job = RetrieveNextJob.(client)
+        assert_equal job_id, job.id
+        assert_equal job_type, job.type
+        assert_equal language, job.language
+        assert_equal exercise, job.exercise
+        assert_equal s3_uri, job.s3_uri
       end
+    end
+
+    def test_no_jobs_in_dynamodb
+      client = mock
+      client.expects(:query).returns(mock(items: []))
+      assert_nil RetrieveNextJob.(client)
     end
   end
 end
