@@ -35,6 +35,11 @@ module Orchestrator
       client.expects(:update_item).
         with(update_params)
 
+      RestClient.expects(:patch).with(
+        "http://localhost:3020/spi/boffin_jobs/#{job_id}",
+        {}
+      )
+
       ProcessJob.(job_id, {
         'status' => status,
         'result' => result,
