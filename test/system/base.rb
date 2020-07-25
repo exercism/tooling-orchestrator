@@ -10,7 +10,7 @@ module Orchestrator
     end
 
     def application
-      Orchestrator.application
+      Orchestrator::Application.new
     end
   end
 end

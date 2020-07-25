@@ -15,8 +15,9 @@ gem 'concurrent-ruby'
 gem 'rest-client'
 gem 'puma'
 gem 'zeitwerk'
-
+gem 'aws-sdk-dynamodb', '~> 1.51'
 gem 'mandate'
+gem 'exercism_config'
 
 gem 'parallel'
 

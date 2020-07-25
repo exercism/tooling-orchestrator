@@ -7,17 +7,11 @@ require 'sinatra/json'
 module Orchestrator
   module Http
     class WebApplication < Sinatra::Base
-      get '/status' do
-        json({
-          queue_length: application.queue_length
-        })
-      end
-
       get '/jobs/next' do
         job = application.lock_next_job!
         if job
           log("Found job #{job}")
-          json(job.to_json)
+          json(job.to_h)
         else
           log('No jobs found')
           status 404
@@ -25,23 +19,18 @@ module Orchestrator
         end
       end
 
-      post '/jobs' do
-        job = Job.new(
-          params['job_type'],
-          params['iteration_uuid'],
-          params['language'],
-          params['exercise'],
-          params['s3_uri']
-        )
-        application.enqueue_job!(job)
-        log("Enqueued job #{job.to_json}")
+      patch '/jobs/:id' do
+        log("Got back job ##{params[:id]}")
+
+        keys = %w[status result context invocation_data]
+        application.process_job!(params[:id], params.slice(*keys))
         json({})
       end
 
       private
 
       def application
-        Orchestrator.application
+        @application ||= Orchestrator::Application.new
       end
 
       def log(*args)

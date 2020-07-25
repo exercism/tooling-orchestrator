@@ -1,24 +1,22 @@
 module Orchestrator
   class Job
-    attr_reader :id
-
-    def initialize(type, iteration_uuid, language, exercise, s3_uri)
+    attr_reader :id, :type, :language, :exercise, :s3_uri
+    def initialize(type, id, language, exercise, s3_uri)
       @type = type
-      @iteration_uuid = iteration_uuid
+      @id = id
       @language = language
       @exercise = exercise
       @s3_uri = s3_uri
-      @id = SecureRandom.uuid
     end
 
     def to_s
-      "#{id} | #{type}: #{iteration_uuid}"
+      "#{id} | #{type}"
     end
 
-    def to_json
+    def to_h
       {
         id: id,
-        job_type: type,
+        type: type,
         language: language,
         exercise: exercise,
         s3_uri: s3_uri,
@@ -26,9 +24,6 @@ module Orchestrator
         execution_timeout: nil
       }
     end
-
-    private
-    attr_reader :type, :iteration_uuid, :language, :exercise, :s3_uri
   end
 end
 
