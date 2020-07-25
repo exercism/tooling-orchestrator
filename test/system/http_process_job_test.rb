@@ -18,7 +18,7 @@ module Orchestrator
       patch "/jobs/#{job_id}", 
         status: status, 
         result: result,
-       context: context, 
+        context: context, 
         invocation_data: invocation_data
 
       assert_equal 200, last_response.status

@@ -41,6 +41,10 @@ module Orchestrator
     end
 
     def inform_spi
+      RestClient.patch(
+        "http://localhost:3020/spi/boffin_jobs/#{job_id}",
+        {}
+      )
     end
 
     private
