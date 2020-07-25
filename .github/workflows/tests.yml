@@ -10,6 +10,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      dynamodb: 
+        image: "amazon/dynamodb-local"
+        ports:
+        - 3039:8000
+
     steps:
     ###
     # Checkout using GitHub's checkout action
