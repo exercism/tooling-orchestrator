@@ -7,7 +7,8 @@ module Orchestrator
       when :production
         Exercism.config.dynamodb_endpoint
       else
-        "http://localhost:3039"
+        dynamodb_host = ENV.fetch("DYNAMODB_HOST", "localhost")
+        "http://#{dynamodb_host}:3039"
       end
     end
 
