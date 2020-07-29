@@ -17,7 +17,7 @@ GEM
     concurrent-ruby (1.1.6)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    exercism_config (0.18.0)
+    exercism_config (0.21.0)
       aws-sdk-dynamodb (~> 1.0)
       mandate
       zeitwerk
@@ -76,7 +76,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk-dynamodb (~> 1.51)
   concurrent-ruby
-  exercism_config (>= 0.18.0)
+  exercism_config (>= 0.21.0)
   mandate
   minitest
   mocha
