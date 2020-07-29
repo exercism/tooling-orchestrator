@@ -14,5 +14,7 @@ RUN gem install bundler
 COPY Gemfile Gemfile.lock ./
 RUN bundle install --full-index
 
-ENTRYPOINT cd /usr/src/app && hivemind -p 3021 ./Procfile
+ENTRYPOINT cd /usr/src/app && \
+           setup_exercism_config --settings-file=/usr/src/settings/settings.yml && \
+           hivemind -p 3021 ./Procfile
 
