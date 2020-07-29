@@ -17,7 +17,7 @@ gem 'puma'
 gem 'zeitwerk'
 gem 'aws-sdk-dynamodb', '~> 1.51'
 gem 'mandate'
-gem 'exercism_config', '>= 0.18.0'  
+gem 'exercism_config', '>= 0.21.0'  
 
 gem 'parallel'
 gem 'rack-test'
