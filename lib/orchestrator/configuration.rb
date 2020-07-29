@@ -3,21 +3,11 @@ module Orchestrator
     include Singleton
 
     def dynamodb_endpoint
-      case env
-      when :production
-        Exercism.config.dynamodb_endpoint
-      else
-        "http://localhost:3039"
-      end
+      Exercism.config.dynamodb_endpoint
     end
 
     def jobs_table
-      case env
-      when :test
-        "boffin_jobs-test"
-      else
-        "boffin_jobs"
-      end
+      Exercism.config.dynamodb_tooling_jobs_table
     end
 
     def env

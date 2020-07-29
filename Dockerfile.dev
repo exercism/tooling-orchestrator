@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 
 RUN gem install bundler
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+RUN bundle install --full-index
 
 ENTRYPOINT cd /usr/src/app && hivemind -p 3021 ./Procfile
 
