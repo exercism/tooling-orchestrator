@@ -3,11 +3,7 @@ module Orchestrator
 
     def initialize
       @__client__ = Concurrent::MVar.new(
-        Aws::DynamoDB::Client.new(
-          endpoint: Orchestrator.config.dynamodb_endpoint,
-          profile: "exercism_website",
-          region: "eu-west-2"
-        )
+        ExercismConfig::SetupDynamoDBClient.()
       )
     end
 

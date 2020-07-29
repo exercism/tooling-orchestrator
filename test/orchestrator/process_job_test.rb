@@ -11,7 +11,7 @@ module Orchestrator
 
       client = mock
       update_params = {
-        table_name: "boffin_jobs-test",
+        table_name: "tooling_jobs-test",
         key: { id: job_id }, 
         expression_attribute_names: {
           "#JS": "job_status",
@@ -36,7 +36,7 @@ module Orchestrator
         with(update_params)
 
       RestClient.expects(:patch).with(
-        "http://localhost:3020/spi/boffin_jobs/#{job_id}",
+        "http://localhost:3020/spi/tooling_jobs/#{job_id}",
         {}
       )
 
