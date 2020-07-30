@@ -36,7 +36,7 @@ module Orchestrator
         with(update_params)
 
       RestClient.expects(:patch).with(
-        "http://localhost:3020/spi/tooling_jobs/#{job_id}",
+        "#{Exercism.config.spi_url}/spi/tooling_jobs/#{job_id}",
         {}
       )
 
