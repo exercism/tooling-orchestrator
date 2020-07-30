@@ -16,7 +16,6 @@ module Orchestrator
 
       get "/jobs/next"
       assert_equal 404, last_response.status
-      assert_equal Hash.new.to_json, last_response.body
     end
   end
 end

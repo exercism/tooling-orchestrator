@@ -42,7 +42,7 @@ module Orchestrator
 
     def inform_spi
       RestClient.patch(
-        "http://localhost:3020/spi/tooling_jobs/#{job_id}",
+        "#{Exercism.config.spi_url}/spi/tooling_jobs/#{job_id}",
         {}
       )
     end
