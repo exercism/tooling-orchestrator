@@ -12,9 +12,10 @@ WORKDIR /usr/src/app
 
 RUN gem install bundler
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --full-index
+RUN bundle install
 
 ENTRYPOINT cd /usr/src/app && \
-           setup_exercism_config --settings-file=/usr/src/settings/settings.yml && \
+           bundle update --full-index --conservative exercism_config && \
+           EXERCISM_DOCKER=true EXERCISM_ENV=development setup_exercism_config && \
            hivemind -p 3021 ./Procfile
 

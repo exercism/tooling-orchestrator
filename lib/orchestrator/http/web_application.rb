@@ -8,14 +8,20 @@ module Orchestrator
   module Http
     class WebApplication < Sinatra::Base
       get '/jobs/next' do
-        job = application.lock_next_job!
-        if job
-          log("Found job #{job}")
-          json(job.to_h)
-        else
+        begin
+          job = application.lock_next_job!
+          if job
+            log("Found job #{job}")
+            log(job.to_h)
+            json(job.to_h)
+          else
+            log('No jobs found')
+            status 404
+          end
+        rescue Aws::DynamoDB::Errors::ResourceNotFoundException
+          log("Cannot connect to AWS")
           log('No jobs found')
-          status 404
-          json({})
+          status 500
         end
       end
 
