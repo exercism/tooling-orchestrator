@@ -9,7 +9,7 @@ RUN gem install bundler:2.1.4
 ENV BUNDLE_PATH /usr/src/bundler_cache
 COPY Gemfile Gemfile.lock ./
 COPY .cache/bundler/ /usr/src/bundler_cache
-bundle install
+RUN bundle install
 
 WORKDIR /usr/src/app
 ENTRYPOINT bundle update --full-index --conservative exercism_config && \
