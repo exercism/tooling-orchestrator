@@ -8,7 +8,7 @@ module Orchestrator
       exercise = :bob
       s3_uri = "s3://..."
       job_type = "test_runner"
-       
+
       job = Job.new(job_type, job_id, language, exercise, s3_uri)
 
       expected = {

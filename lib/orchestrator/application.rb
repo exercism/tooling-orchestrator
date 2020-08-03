@@ -1,6 +1,5 @@
 module Orchestrator
   class Application
-
     def initialize
       @__client__ = Concurrent::MVar.new(
         ExercismConfig::SetupDynamoDBClient.()
@@ -25,7 +24,7 @@ module Orchestrator
 
     private
     def with_client
-      @__client__.borrow {|client| yield(client) }
+      @__client__.borrow { |client| yield(client) }
     end
   end
 end

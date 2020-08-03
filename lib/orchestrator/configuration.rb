@@ -12,14 +12,13 @@ module Orchestrator
 
     def env
       @env ||= case ENV["APP_ENV"].to_s
-        when "test"
-          :test
-        when "production"
-          :production
-        else
-          :development
-        end
+               when "test"
+                 :test
+               when "production"
+                 :production
+               else
+                 :development
+               end
     end
   end
 end
-

@@ -17,11 +17,9 @@ module Orchestrator
     Configuration.instance
   end
 
-  def self.dynamodb_client
-
-  end
+  def self.dynamodb_client; end
 end
 
 # Get a new application on this main thread
 # before sinatra or anything else kicks in
-#Orchestrator.application
+# Orchestrator.application

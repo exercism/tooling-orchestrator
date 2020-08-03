@@ -12,7 +12,7 @@ module Orchestrator
       client = mock
       update_params = {
         table_name: Exercism.config.dynamodb_tooling_jobs_table,
-        key: { id: job_id }, 
+        key: { id: job_id },
         expression_attribute_names: {
           "#JS": "job_status",
           "#LU": "locked_until",
@@ -20,15 +20,15 @@ module Orchestrator
           "#ES": "execution_status",
           "#EC": "execution_context",
           "#EID": "execution_invocation_data"
-        }, 
-        expression_attribute_values: { 
+        },
+        expression_attribute_values: {
           ":js": "executed",
           ":lu": nil,
           ":r": result,
           ":es": status,
           ":ec": context,
           ":eid": invocation_data
-        }, 
+        },
         update_expression: "SET #JS = :js, #LU = :lu, #R = :r, #ES = :es, #EC = :ec, #EID = :eid",
         return_values: "NONE"
       }
@@ -41,13 +41,11 @@ module Orchestrator
       )
 
       ProcessJob.(job_id, {
-        'status' => status,
-        'result' => result,
-        'context' => context,
-        'invocation_data' => invocation_data
-      }, client)
-
+                    'status' => status,
+                    'result' => result,
+                    'context' => context,
+                    'invocation_data' => invocation_data
+                  }, client)
     end
   end
 end
-

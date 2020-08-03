@@ -14,38 +14,38 @@ module Orchestrator
         query_params = {
           table_name: Exercism.config.dynamodb_tooling_jobs_table,
           index_name: "job_status",
-          expression_attribute_names: { "#JS": "job_status" }, 
-          expression_attribute_values: { ":js": "pending" }, 
+          expression_attribute_names: { "#JS": "job_status" },
+          expression_attribute_values: { ":js": "pending" },
           key_condition_expression: "#JS = :js",
-          limit: 1,
+          limit: 1
         }
         client.expects(:query).
-              with(query_params).
-              returns(mock(items: ['id' => job_id]))
+          with(query_params).
+          returns(mock(items: ['id' => job_id]))
 
         update_params = {
           table_name: Exercism.config.dynamodb_tooling_jobs_table,
-          key: { id: job_id }, 
+          key: { id: job_id },
           expression_attribute_names: {
             "#JS": "job_status",
             "#LU": "locked_until"
-          }, 
-          expression_attribute_values: { 
+          },
+          expression_attribute_values: {
             ":js": "locked",
             ":lu": Time.now.to_i + 15
-          }, 
+          },
           update_expression: "SET #JS = :js, #LU = :lu",
           return_values: "ALL_NEW"
         }
         client.expects(:update_item).
           with(update_params).
           returns(mock(attributes: {
-            'type' => job_type,
-            'id' => job_id,
-            'language' => language,
-            'exercise' => exercise,
-            's3_uri' => s3_uri
-          }))
+                         'type' => job_type,
+                         'id' => job_id,
+                         'language' => language,
+                         'exercise' => exercise,
+                         's3_uri' => s3_uri
+                       }))
 
         job = RetrieveNextJob.(client)
         assert_equal job_id, job.id
