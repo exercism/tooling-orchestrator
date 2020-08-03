@@ -1,2 +1,3 @@
 # Cache used for docker
 .cache
+node_modules/
