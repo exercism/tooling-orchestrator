@@ -7,11 +7,10 @@ require "minitest/mock"
 require "mocha/minitest"
 require "timecop"
 
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require "orchestrator"
 
 module Minitest
   class Test
   end
 end
-
