@@ -12,7 +12,7 @@ module Orchestrator
 
         client = mock
         query_params = {
-          table_name: "tooling_jobs-test",
+          table_name: Exercism.config.dynamodb_tooling_jobs_table,
           index_name: "job_status",
           expression_attribute_names: { "#JS": "job_status" }, 
           expression_attribute_values: { ":js": "pending" }, 
@@ -24,7 +24,7 @@ module Orchestrator
               returns(mock(items: ['id' => job_id]))
 
         update_params = {
-          table_name: "tooling_jobs-test",
+          table_name: Exercism.config.dynamodb_tooling_jobs_table,
           key: { id: job_id }, 
           expression_attribute_names: {
             "#JS": "job_status",

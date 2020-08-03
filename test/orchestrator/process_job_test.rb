@@ -11,7 +11,7 @@ module Orchestrator
 
       client = mock
       update_params = {
-        table_name: "tooling_jobs-test",
+        table_name: Exercism.config.dynamodb_tooling_jobs_table,
         key: { id: job_id }, 
         expression_attribute_names: {
           "#JS": "job_status",
