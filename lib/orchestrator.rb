@@ -16,8 +16,6 @@ module Orchestrator
   def self.config
     Configuration.instance
   end
-
-  def self.dynamodb_client; end
 end
 
 # Get a new application on this main thread
