@@ -1,5 +1,7 @@
 # Tooling Orchestrator
 
+![Tests](https://github.com/exercism/tooling-orchestrator/workflows/Tests/badge.svg)
+
 An Orchestrator for Exercism's test runners.
 
 ## Run locally
