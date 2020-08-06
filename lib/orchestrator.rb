@@ -6,7 +6,7 @@ require 'mandate'
 require 'rest-client'
 require 'singleton'
 require 'aws-sdk-dynamodb'
-require 'exercism_config'
+require 'exercism-config'
 
 require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem
