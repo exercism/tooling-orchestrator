@@ -18,5 +18,8 @@ require "orchestrator"
 
 module Minitest
   class Test
+    def config
+      Orchestrator::Configuration.instance
+    end
   end
 end
