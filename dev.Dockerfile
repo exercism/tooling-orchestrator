@@ -24,5 +24,7 @@ COPY --from=gembuilder /usr/local/bundle/ /usr/local/bundle/
 # copy the source as late as possible to maximize cache
 COPY . .
 
+ENV CONTAINER_NAME=tooling-orchestrator
+
 ENTRYPOINT APP_ENV=development bundle exec rackup -p 3021 --host 0.0.0.0
 
