@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 
 COPY Gemfile Gemfile.lock ./
 RUN gem install bundler:2.1.4 && \
-    bundle install
+    bundle install --frozen
 
 #############
 ## Stage 2 ##
