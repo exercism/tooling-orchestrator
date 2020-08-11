@@ -13,11 +13,11 @@ loader = Zeitwerk::Loader.for_gem
 loader.setup
 
 module Orchestrator
+  def self.application
+    Application.instance
+  end
+
   def self.config
     Configuration.instance
   end
 end
-
-# Get a new application on this main thread
-# before sinatra or anything else kicks in
-# Orchestrator.application

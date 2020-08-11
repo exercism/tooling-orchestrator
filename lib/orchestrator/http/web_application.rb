@@ -33,7 +33,7 @@ module Orchestrator
 
       private
       def application
-        @application ||= Orchestrator::Application.new
+        Orchestrator.application
       end
 
       def log(*args)
