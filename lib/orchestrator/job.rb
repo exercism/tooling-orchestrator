@@ -1,6 +1,6 @@
 module Orchestrator
   class Job
-    attr_reader :id, :type, :language, :exercise, :s3_uri
+    attr_reader :type, :id, :language, :exercise, :s3_uri
     def initialize(type, id, language, exercise, s3_uri)
       @type = type
       @id = id

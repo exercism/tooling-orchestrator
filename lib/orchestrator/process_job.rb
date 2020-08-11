@@ -1,12 +1,7 @@
 module Orchestrator
   class ProcessJob
     include Mandate
-    def initialize(job_id, data, client)
-      @job_id = job_id
-      @data = data
-      @client = client
-      @table_name = Orchestrator.config.jobs_table
-    end
+    initialize_with :job_id, :data, :client
 
     def call
       update_dynamodb
@@ -17,7 +12,7 @@ module Orchestrator
 
     def update_dynamodb
       client.update_item(
-        table_name: table_name,
+        table_name: Orchestrator.config.jobs_table,
         key: { id: job_id },
         expression_attribute_names: {
           "#JS": "job_status",
@@ -46,8 +41,5 @@ module Orchestrator
         {}
       )
     end
-
-    private
-    attr_reader :job_id, :data, :client, :table_name
   end
 end
