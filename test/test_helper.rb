@@ -33,5 +33,11 @@ module Minitest
         key: { id: job_id }
       ).item
     end
+
+    def download_s3_file(bucket, key)
+      client = ExercismConfig::SetupS3Client.()
+      client.get_object(bucket: bucket,
+                        key: key).body.read
+    end
   end
 end
