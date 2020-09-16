@@ -5,7 +5,7 @@ module Orchestrator
     def test_processes_job
       job_id = SecureRandom.uuid
       status = SecureRandom.uuid
-      result = SecureRandom.uuid
+      output = SecureRandom.uuid
       context = SecureRandom.uuid
       invocation_data = SecureRandom.uuid
 
@@ -13,7 +13,7 @@ module Orchestrator
         job_id,
         {
           'status' => status,
-          'result' => result,
+          'output' => output,
           'context' => context,
           'invocation_data' => invocation_data
         },
@@ -21,7 +21,7 @@ module Orchestrator
       )
       patch "/jobs/#{job_id}",
             status: status,
-            result: result,
+            output: output,
             context: context,
             invocation_data: invocation_data
 
