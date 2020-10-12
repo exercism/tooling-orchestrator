@@ -20,7 +20,7 @@ gem 'aws-sdk-s3'
 gem 'mandate'
 gem 'exercism-config', '>= 0.42.0'
 
-group "development", "test" do
+group :development, :test do
   gem 'parallel'
   gem 'rack-test'
   gem 'rubocop'

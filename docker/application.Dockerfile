@@ -14,6 +14,8 @@ RUN gem install bundler:2.1.4 && \
     bundle config set without 'development test' && \
     bundle install
 
+RUN bundle list
+
 #############
 ## Stage 2 ##
 #############
@@ -28,5 +30,7 @@ COPY --from=gembuilder /usr/local/bundle/ /usr/local/bundle/
 
 # copy the source as late as possible to maximize cache
 COPY . .
+
+RUN bundle list
 
 ENTRYPOINT bundle exec rackup -p 3000 --host 0.0.0.0
