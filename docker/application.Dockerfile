@@ -7,6 +7,7 @@ RUN apk add --no-cache --update build-base cmake
 
 WORKDIR /usr/src/app
 ENV APP_ENV=production
+ENV RACK_ENV=production
 
 COPY Gemfile Gemfile.lock ./
 
