@@ -54,18 +54,18 @@ jobs:
         id: login_to_ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      #########################
-      #########################
-      # Build the Rails image #
-      #########################
-      #########################
-      - name: Build and Push Rails Docker
+      ###############################
+      ###############################
+      # Build the Application image #
+      ###############################
+      ###############################
+      - name: Build and Push Application Docker
         env:
           ECR_REGISTRY: ${{ steps.login_to_ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ env.ecr_repository_rails }}
+          ECR_REPOSITORY: ${{ env.ecr_repository_application }}
           IMAGE_TAG: ${{ github.sha }}
-          DOCKERFILE: ${{ env.dockerfile_rails }}
-          IMAGE_NAME: "${{ steps.login_to_ecr.outputs.registry}}/${{ env.ecr_repository_rails }}:${{ github.sha }}"
+          DOCKERFILE: ${{ env.dockerfile_application }}
+          IMAGE_NAME: "${{ steps.login_to_ecr.outputs.registry}}/${{ env.ecr_repository_application }}:${{ github.sha }}"
         run: |
           # Build a docker container and push it to ECR
           docker build -t $IMAGE_NAME -f $DOCKERFILE .
@@ -120,7 +120,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: application
-          image: "${{ steps.login_to_ecr.outputs.registry }}/${{ env.ecr_repository_rails }}:${{ github.sha }}"
+          image: "${{ steps.login_to_ecr.outputs.registry }}/${{ env.ecr_repository_application }}:${{ github.sha }}"
 
       # Set nginx image
       - name: Update the definition for nginx
