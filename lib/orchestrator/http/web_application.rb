@@ -7,6 +7,12 @@ require 'sinatra/json'
 module Orchestrator
   module Http
     class WebApplication < Sinatra::Base
+      # Ping check for ELBs
+      get '/' do
+        json(ruok: :yes)
+        status 200
+      end
+
       get '/jobs/next' do
         job = application.lock_next_job!
         if job
