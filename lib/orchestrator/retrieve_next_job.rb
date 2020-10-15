@@ -28,7 +28,7 @@ module Orchestrator
         table_name: table_name,
         index_name: "job_status",
         expression_attribute_names: { "#JS": "job_status" },
-        expression_attribute_values: { ":js": "pending" },
+        expression_attribute_values: { ":js": "queued" },
         key_condition_expression: "#JS = :js",
         limit: 1
       ).items.first
