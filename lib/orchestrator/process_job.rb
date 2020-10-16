@@ -14,6 +14,9 @@ module Orchestrator
     private
     attr_reader :output_s3_mapping
     def upload_to_s3
+      return unless data['output']
+      return if data['output'].empty?
+
       bucket = Exercism.config.aws_tooling_jobs_bucket.freeze
       path = "#{Exercism.env}/tooling_jobs/#{job_id}/output".freeze
 

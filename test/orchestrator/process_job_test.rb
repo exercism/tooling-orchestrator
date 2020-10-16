@@ -17,12 +17,15 @@ module Orchestrator
         {}
       )
 
-      ProcessJob.(job_id, {
-                    'status' => status,
-                    'output' => output,
-                    'context' => context,
-                    'invocation_data' => invocation_data
-                  }, ExercismConfig::SetupDynamoDBClient.())
+      ProcessJob.(
+        job_id,
+        {
+          'status' => status,
+          'output' => output,
+          'context' => context,
+          'invocation_data' => invocation_data
+        }, ExercismConfig::SetupDynamoDBClient.()
+      )
 
       attrs = fetch_job_attrs(job_id)
       assert_equal "executed", attrs['job_status']
@@ -42,6 +45,16 @@ module Orchestrator
                      Exercism.config.aws_tooling_jobs_bucket,
                      attrs['output']["mapping.json"]
                    )
+    end
+
+    def test_copes_with_missing_data
+      RestClient.expects(:patch)
+      ProcessJob.(
+        SecureRandom.uuid,
+        {
+          'status' => 513
+        }, ExercismConfig::SetupDynamoDBClient.()
+      )
     end
   end
 end

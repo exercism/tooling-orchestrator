@@ -21,7 +21,7 @@ module Orchestrator
         exercise: exercise,
         s3_uri: s3_uri,
         container_version: nil,
-        execution_timeout: nil
+        timeout: nil
       }
     end
   end

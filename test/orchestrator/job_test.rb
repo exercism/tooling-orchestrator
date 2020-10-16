@@ -18,7 +18,7 @@ module Orchestrator
         exercise: exercise,
         s3_uri: s3_uri,
         container_version: nil,
-        execution_timeout: nil
+        timeout: nil
       }
       assert_equal expected, job.to_h
     end
