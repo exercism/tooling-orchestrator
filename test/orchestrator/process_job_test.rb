@@ -5,8 +5,7 @@ module Orchestrator
     def test_full_flow
       job_id = SecureRandom.uuid
       status = SecureRandom.uuid
-      context = SecureRandom.uuid
-      invocation_data = SecureRandom.uuid
+      metadata = SecureRandom.uuid
       output = {
         'representation.txt' => "Foobar",
         'mapping.json' => '{"foo": "bar"}'
@@ -22,29 +21,18 @@ module Orchestrator
         {
           'status' => status,
           'output' => output,
-          'context' => context,
-          'invocation_data' => invocation_data
+          'metadata' => metadata
         }, ExercismConfig::SetupDynamoDBClient.()
       )
 
       attrs = fetch_job_attrs(job_id)
       assert_equal "executed", attrs['job_status']
       assert_equal status, attrs['execution_status']
-      assert_equal context, attrs['execution_context']
-      assert_equal invocation_data, attrs['execution_invocation_data']
+      assert_equal metadata, attrs['execution_metadata']
       assert_nil attrs['locked_until']
 
-      assert_equal output["representation.txt"],
-                   download_s3_file(
-                     Exercism.config.aws_tooling_jobs_bucket,
-                     attrs['output']["representation.txt"]
-                   )
-
-      assert_equal output["mapping.json"],
-                   download_s3_file(
-                     Exercism.config.aws_tooling_jobs_bucket,
-                     attrs['output']["mapping.json"]
-                   )
+      assert_equal output['representation.txt'], attrs["execution_output"]["representation.txt"]
+      assert_equal output['mapping.json'], attrs["execution_output"]["mapping.json"]
     end
 
     def test_copes_with_missing_data

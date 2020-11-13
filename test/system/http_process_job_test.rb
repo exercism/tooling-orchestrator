@@ -6,24 +6,21 @@ module Orchestrator
       job_id = SecureRandom.uuid
       status = SecureRandom.uuid
       output = SecureRandom.uuid
-      context = SecureRandom.uuid
-      invocation_data = SecureRandom.uuid
+      metadata = SecureRandom.uuid
 
       ProcessJob.expects(:call).with(
         job_id,
         {
           'status' => status,
           'output' => output,
-          'context' => context,
-          'invocation_data' => invocation_data
+          'metadata' => metadata
         },
         anything
       )
       patch "/jobs/#{job_id}",
             status: status,
             output: output,
-            context: context,
-            invocation_data: invocation_data
+            metadata: metadata
 
       assert_equal 200, last_response.status
       assert_equal('{}', last_response.body)
