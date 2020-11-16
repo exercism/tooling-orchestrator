@@ -20,6 +20,12 @@ require "timecop"
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require "orchestrator"
 
+# Silence the noise. Comment this to see exception
+# messages and other things that are printed during tests.
+module Kernel
+  def puts(*args); end
+end
+
 module Minitest
   class Test
     def config

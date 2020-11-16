@@ -18,7 +18,7 @@ module Orchestrator
     end
 
     def log(msg)
-      p "** #{msg}"
+      puts "** #{msg}"
     end
 
     def lock_next_job!

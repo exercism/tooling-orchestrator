@@ -5,7 +5,6 @@ module Orchestrator
     def test_full_flow
       job_id = SecureRandom.uuid
       status = SecureRandom.uuid
-      metadata = SecureRandom.uuid
       output = {
         'representation.txt' => "Foobar",
         'mapping.json' => '{"foo": "bar"}'
@@ -20,15 +19,13 @@ module Orchestrator
         job_id,
         {
           'status' => status,
-          'output' => output,
-          'metadata' => metadata
+          'output' => output
         }, ExercismConfig::SetupDynamoDBClient.()
       )
 
       attrs = fetch_job_attrs(job_id)
       assert_equal "executed", attrs['job_status']
       assert_equal status, attrs['execution_status']
-      assert_equal metadata, attrs['execution_metadata']
       assert_nil attrs['locked_until']
 
       assert_equal output['representation.txt'], attrs["execution_output"]["representation.txt"]

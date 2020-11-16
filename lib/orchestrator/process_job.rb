@@ -19,17 +19,15 @@ module Orchestrator
           "#JS": "job_status",
           "#LU": "locked_until",
           "#ES": "execution_status",
-          "#EO": "execution_output",
-          "#EM": "execution_metadata"
+          "#EO": "execution_output"
         },
         expression_attribute_values: {
           ":js": "executed",
           ":lu": nil,
           ":es": data['status'],
-          ":eo": data['output'],
-          ":em": data['metadata']
+          ":eo": data['output']
         },
-        update_expression: "SET #JS = :js, #LU = :lu, #EO = :eo, #ES = :es, #EM = :em",
+        update_expression: "SET #JS = :js, #LU = :lu, #EO = :eo, #ES = :es",
         return_values: "NONE"
       )
     end
