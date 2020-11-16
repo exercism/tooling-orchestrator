@@ -3,7 +3,7 @@ require_relative 'base'
 module Orchestrator
   class HttpNextJobTest < SystemBaseTestCase
     def test_with_job
-      job = Job.new(nil, 1, nil, nil, nil)
+      job = Job.new(nil, 1, nil, nil)
 
       RetrieveNextJob.expects(:call).returns(job)
       get "/jobs/next"
