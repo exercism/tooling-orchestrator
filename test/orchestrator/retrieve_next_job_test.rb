@@ -8,7 +8,6 @@ module Orchestrator
         job_type = SecureRandom.uuid
         language = SecureRandom.uuid
         exercise = SecureRandom.uuid
-        s3_uri = SecureRandom.uuid
 
         client = mock
         query_params = {
@@ -43,8 +42,7 @@ module Orchestrator
                          'type' => job_type,
                          'id' => job_id,
                          'language' => language,
-                         'exercise' => exercise,
-                         's3_uri' => s3_uri
+                         'exercise' => exercise
                        }))
 
         job = RetrieveNextJob.(client)
@@ -52,7 +50,6 @@ module Orchestrator
         assert_equal job_type, job.type
         assert_equal language, job.language
         assert_equal exercise, job.exercise
-        assert_equal s3_uri, job.s3_uri
       end
     end
 

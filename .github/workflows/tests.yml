@@ -16,11 +16,6 @@ jobs:
         ports:
           - 8000
 
-      s3:
-        image: "adobe/s3mock"
-        ports:
-          - 9090
-
     steps:
       ###
       # Checkout using GitHub's checkout action
@@ -50,7 +45,6 @@ jobs:
           EXERCISM_ENV: test
           EXERCISM_CI: true
           DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
-          S3_PORT: ${{ job.services.s3.ports['9090'] }}
         run: |
           bundle config path vendor/bundle # This is needed for the caching above
           bundle install --jobs 4 --retry 3 --full-index
@@ -72,7 +66,6 @@ jobs:
           EXERCISM_ENV: test
           EXERCISM_CI: true
           DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
-          S3_PORT: ${{ job.services.s3.ports['9090'] }}
           CAPTURE_CODE_COVERAGE: true
         run: |
           bundle exec rake test

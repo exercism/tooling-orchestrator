@@ -1,12 +1,11 @@
 module Orchestrator
   class Job
-    attr_reader :type, :id, :language, :exercise, :s3_uri
-    def initialize(type, id, language, exercise, s3_uri)
+    attr_reader :type, :id, :language, :exercise
+    def initialize(type, id, language, exercise)
       @type = type
       @id = id
       @language = language
       @exercise = exercise
-      @s3_uri = s3_uri
     end
 
     def to_s
@@ -19,7 +18,6 @@ module Orchestrator
         type: type,
         language: language,
         exercise: exercise,
-        s3_uri: s3_uri,
         container_version: nil,
         timeout: nil
       }

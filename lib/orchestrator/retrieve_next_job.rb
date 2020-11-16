@@ -14,8 +14,7 @@ module Orchestrator
         attrs['type'],
         attrs['id'],
         attrs['language'],
-        attrs['exercise'],
-        attrs['s3_uri']
+        attrs['exercise']
       )
     end
 
