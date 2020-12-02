@@ -18,7 +18,7 @@ gem 'zeitwerk'
 gem 'aws-sdk-dynamodb', '~> 1.51'
 gem 'aws-sdk-s3'
 gem 'mandate'
-gem 'exercism-config', '>= 0.42.0'
+gem 'exercism-config', '>= 0.53.0'
 
 group :development, :test do
   gem 'parallel'
