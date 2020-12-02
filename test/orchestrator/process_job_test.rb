@@ -20,7 +20,7 @@ module Orchestrator
         {
           'status' => status,
           'output' => output
-        }, ExercismConfig::SetupDynamoDBClient.()
+        }, Exercism.dynamodb_client
       )
 
       attrs = fetch_job_attrs(job_id)
@@ -38,7 +38,7 @@ module Orchestrator
         SecureRandom.uuid,
         {
           'status' => 513
-        }, ExercismConfig::SetupDynamoDBClient.()
+        }, Exercism.dynamodb_client
       )
     end
   end

@@ -33,7 +33,7 @@ module Minitest
     end
 
     def fetch_job_attrs(job_id)
-      client = ExercismConfig::SetupDynamoDBClient.()
+      client = Exercism.dynamodb_client
       client.get_item(
         table_name: Exercism.config.dynamodb_tooling_jobs_table,
         key: { id: job_id }

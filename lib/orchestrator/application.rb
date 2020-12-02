@@ -13,7 +13,7 @@ module Orchestrator
     # it just makes things occasionally slower end-to-end.
     def initialize
       @__client__ = Concurrent::MVar.new(
-        ExercismConfig::SetupDynamoDBClient.()
+        Exercism.dynamodb_client
       )
     end
 

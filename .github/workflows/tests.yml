@@ -11,15 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      dynamodb:
-        image: "amazon/dynamodb-local"
+      aws:
+        image: "localstack/localstack"
         ports:
-          - 8000
-
-      s3:
-        image: "adobe/s3mock"
-        ports:
-          - 9090
+          - 4566
 
     steps:
       ###
@@ -29,19 +24,10 @@ jobs:
       ###
       # Setup Ruby - this needs to match the version in the Gemfile
       - name: Set up Ruby
-        uses: actions/setup-ruby@5f29a1cd8dfebf420691c4c9a0e832e2fae5a526
+        uses: ruby/setup-ruby@a699edbce608a2c128dedad88e3b6a0e28687b3c
         with:
           ruby-version: 2.6.6
-
-      ###
-      # Caching using GitHub's caching action
-      - name: Cache Bundler
-        uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
+          bundler-cache: true
 
       ###
       # Install bundler and yarn dependencies
@@ -49,12 +35,8 @@ jobs:
         env:
           EXERCISM_ENV: test
           EXERCISM_CI: true
-          DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
-          S3_PORT: ${{ job.services.s3.ports['9090'] }}
+          AWS_PORT: ${{ job.services.aws.ports['4566'] }}
         run: |
-          gem install bundler:2.1.4
-          bundle config path vendor/bundle # This is needed for the caching above
-          bundle install --jobs 4 --retry 3 --full-index
           bundle exec setup_exercism_config
           bundle exec setup_exercism_local_aws
 
@@ -72,8 +54,7 @@ jobs:
         env:
           EXERCISM_ENV: test
           EXERCISM_CI: true
-          DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
-          S3_PORT: ${{ job.services.s3.ports['9090'] }}
+          AWS_PORT: ${{ job.services.aws.ports['4566'] }}
           CAPTURE_CODE_COVERAGE: true
         run: |
           bundle exec rake test
