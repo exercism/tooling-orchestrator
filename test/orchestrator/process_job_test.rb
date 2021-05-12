@@ -3,7 +3,7 @@ require 'test_helper'
 module Orchestrator
   class ProcessJobTest < Minitest::Test
     def test_full_flow
-      job_id = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+      job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
 
       status = "really-great"
       output = {
@@ -12,33 +12,32 @@ module Orchestrator
       }
 
       RestClient.expects(:patch).with(
-        "#{Exercism.config.spi_url}/spi/tooling_jobs/#{job_id}",
+        "#{Exercism.config.spi_url}/spi/tooling_jobs/#{job.id}",
         {}
       )
 
       ProcessJob.(
-        job_id,
+        job.id,
         {
           'status' => status,
           'output' => output
         }
       )
 
-      job = Exercism::ToolingJob.find(job_id)
-
       redis = Exercism.redis_tooling_client
       assert_equal 0, redis.llen(Exercism::ToolingJob.key_for_locked)
       assert_equal 1, redis.llen(Exercism::ToolingJob.key_for_executed)
 
+      job = Exercism::ToolingJob.find(job.id)
       assert_equal output['representation.txt'], job.execution_output["representation.txt"]
       assert_equal output['mapping.json'], job.execution_output["mapping.json"]
     end
 
     def test_copes_with_missing_data
-      job_id = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+      job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
       RestClient.expects(:patch)
       ProcessJob.(
-        job_id,
+        job.id,
         {
           'status' => 513
         }
