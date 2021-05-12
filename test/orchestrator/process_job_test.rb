@@ -3,8 +3,9 @@ require 'test_helper'
 module Orchestrator
   class ProcessJobTest < Minitest::Test
     def test_full_flow
-      job_id = SecureRandom.uuid
-      status = SecureRandom.uuid
+      job_id = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+
+      status = "really-great"
       output = {
         'representation.txt' => "Foobar",
         'mapping.json' => '{"foo": "bar"}'
@@ -20,25 +21,27 @@ module Orchestrator
         {
           'status' => status,
           'output' => output
-        }, Exercism.dynamodb_client
+        }
       )
 
-      attrs = fetch_job_attrs(job_id)
-      assert_equal "executed", attrs['job_status']
-      assert_equal status, attrs['execution_status']
-      assert_nil attrs['locked_until']
+      job = Exercism::ToolingJob.find(job_id)
 
-      assert_equal output['representation.txt'], attrs["execution_output"]["representation.txt"]
-      assert_equal output['mapping.json'], attrs["execution_output"]["mapping.json"]
+      redis = Exercism.redis_tooling_client
+      assert_equal 0, redis.llen(Exercism::ToolingJob.key_for_locked)
+      assert_equal 1, redis.llen(Exercism::ToolingJob.key_for_executed)
+
+      assert_equal output['representation.txt'], job.execution_output["representation.txt"]
+      assert_equal output['mapping.json'], job.execution_output["mapping.json"]
     end
 
     def test_copes_with_missing_data
+      job_id = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
       RestClient.expects(:patch)
       ProcessJob.(
-        SecureRandom.uuid,
+        job_id,
         {
           'status' => 513
-        }, Exercism.dynamodb_client
+        }
       )
     end
   end

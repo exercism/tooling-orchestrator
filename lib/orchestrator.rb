@@ -5,7 +5,6 @@ require 'json'
 require 'mandate'
 require 'rest-client'
 require 'singleton'
-require 'aws-sdk-dynamodb'
 require 'exercism-config'
 
 require "zeitwerk"
