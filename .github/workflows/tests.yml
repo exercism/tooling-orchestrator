@@ -16,6 +16,16 @@ jobs:
         ports:
           - 4566
 
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 1s
+          --health-timeout 2s
+          --health-retries 10
+
     steps:
       ###
       # Checkout using GitHub's checkout action
