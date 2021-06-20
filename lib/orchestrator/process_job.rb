@@ -13,7 +13,7 @@ module Orchestrator
     private
     def update_job
       job = Exercism::ToolingJob.find(job_id)
-      job.executed!(data['status'], data['output'])
+      job.executed!(data['status'], data['output'], data['exception'])
     end
 
     def inform_spi
