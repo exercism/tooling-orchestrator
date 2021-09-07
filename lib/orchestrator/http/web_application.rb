@@ -32,7 +32,7 @@ module Orchestrator
       patch '/jobs/:id' do
         log("Got back job ##{params[:id]}")
 
-        keys = %w[status output]
+        keys = %w[status output exception]
         application.process_job!(params[:id], params.slice(*keys))
         json({})
       end
