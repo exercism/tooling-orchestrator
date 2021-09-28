@@ -19,7 +19,7 @@ gem 'aws-sdk-dynamodb', '~> 1.51'
 gem 'aws-sdk-s3'
 gem 'redis'
 gem 'mandate'
-gem 'exercism-config', '>= 0.68.0'
+gem 'exercism-config', '>= 0.76.0'
 # gem 'exercism-config', path: '../exercism_config'
 
 group :development, :test do
