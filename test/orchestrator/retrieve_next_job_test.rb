@@ -17,6 +17,21 @@ module Orchestrator
       assert_equal job_1.id, redis.lindex(Exercism::ToolingJob.key_for_locked, 0)
     end
 
+    def test_background_flow
+      job_1 = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+      Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+
+      redis = Exercism.redis_tooling_client
+      assert_equal 2, redis.llen(Exercism::ToolingJob.queued_for_background_processing)
+      assert_equal 0, redis.llen(Exercism::ToolingJob.key_for_locked)
+
+      assert_equal job_1, RetrieveNextJob.(background: true)
+      assert_equal 1, redis.llen(Exercism::ToolingJob.queued_for_background_processing)
+      assert_equal 1, redis.llen(Exercism::ToolingJob.key_for_locked)
+
+      assert_equal job_1.id, redis.lindex(Exercism::ToolingJob.key_for_locked, 0)
+    end
+
     def test_no_jobs
       assert_nil RetrieveNextJob.()
     end

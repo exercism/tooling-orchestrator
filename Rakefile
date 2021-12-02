@@ -7,4 +7,11 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList["test/**/*_test.rb"]
 end
 
+task :process_background_queue do |t|
+  $LOAD_PATH.unshift File.expand_path('./lib', __dir__)
+  require "orchestrator"
+
+  Orchestrator.process_background_queue
+end
+
 task default: :test

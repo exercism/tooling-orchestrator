@@ -7,7 +7,7 @@ module Orchestrator
       locked_key = Exercism::ToolingJob.key_for_locked
 
       job_id = redis.lpop(queued_key)
-      return unless job_id
+      return unless job_id && job_id != ""
 
       begin
         redis.rpush(locked_key, job_id)

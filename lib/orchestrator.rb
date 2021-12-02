@@ -19,4 +19,8 @@ module Orchestrator
   def self.config
     Configuration.instance
   end
+
+  def self.process_background_queue
+    ProcessBackgroundQueue.()
+  end
 end
