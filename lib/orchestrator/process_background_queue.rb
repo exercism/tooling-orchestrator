@@ -34,9 +34,12 @@ module Orchestrator
       # This can be zero or a negative number
       return if count < 1
 
-      # Note - this isn't in a transaction, so things could potentially get lost here
-      ids = redis.lpop(Exercism::ToolingJob.key_for_queued_for_background_processing, count)
-      redis.rpush(Exercism::ToolingJob.key_for_queued, ids)
+      # In Redis 6.2 we could use the count in lpop
+      count.times do
+        # Note - this isn't in a transaction, so things could potentially get lost here
+        id = redis.lpop(Exercism::ToolingJob.key_for_queued_for_background_processing)
+        redis.rpush(Exercism::ToolingJob.key_for_queued, id)
+      end
     end
 
     memoize
