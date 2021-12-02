@@ -35,7 +35,7 @@ module Orchestrator
       return if count < 1
 
       # Note - this isn't in a transaction, so things could potentially get lost here
-      ids = redis.lpop(Exercism::ToolingJob.key_for_queued_in_background, count)
+      ids = redis.lpop(Exercism::ToolingJob.key_for_queued_for_background_processing, count)
       redis.rpush(Exercism::ToolingJob.key_for_queued, ids)
     end
 
