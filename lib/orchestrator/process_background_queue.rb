@@ -8,16 +8,16 @@ module Orchestrator
       $stdout.sync = true
       $stderr.sync = true
 
-      should_exist = false
+      should_exit = false
       %w[INT TERM].each do |sig|
         trap sig do
           puts "Exit signal recieved"
-          should_exist = true
+          should_exit = true
         end
       end
 
       loop do
-        break if should_exist
+        break if should_exit
 
         sleep(1)
         execute
