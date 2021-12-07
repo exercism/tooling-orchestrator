@@ -1,8 +1,10 @@
+# Background queue length:
+# Exercism.redis_tooling_client.llen(Exercism::ToolingJob.key_for_queued_for_background_processing)
 module Orchestrator
   class ProcessBackgroundQueue
     include Mandate
 
-    MAX_QUEUE_LENGTH = 10
+    MAX_QUEUE_LENGTH = 20
 
     def call
       $stdout.sync = true
