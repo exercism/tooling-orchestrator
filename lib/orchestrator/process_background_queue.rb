@@ -4,7 +4,7 @@ module Orchestrator
   class ProcessBackgroundQueue
     include Mandate
 
-    MAX_QUEUE_LENGTH = 5
+    MAX_QUEUE_LENGTH = 4
 
     def call
       $stdout.sync = true
