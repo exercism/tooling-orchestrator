@@ -10,6 +10,8 @@ module Orchestrator
       $stdout.sync = true
       $stderr.sync = true
 
+      puts "|| Starting background queue processor"
+
       should_exit = false
       %w[INT TERM].each do |sig|
         trap sig do
@@ -35,6 +37,8 @@ module Orchestrator
 
       # This can be zero or a negative number
       return if count < 1
+
+      puts "|| Moving #{count} jobs from background queue"
 
       # In Redis 6.2 we could use the count in lpop
       count.times do
