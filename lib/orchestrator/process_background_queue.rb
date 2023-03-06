@@ -4,7 +4,7 @@ module Orchestrator
   class ProcessBackgroundQueue
     include Mandate
 
-    MAX_QUEUE_LENGTH = 20
+    MAX_QUEUE_LENGTH = 5
 
     def call
       $stdout.sync = true
@@ -21,7 +21,7 @@ module Orchestrator
       loop do
         break if should_exit
 
-        sleep(1)
+        sleep(0.1)
         execute
       rescue StandardError => e
         # If stuff goes wrong should we abort the machine
