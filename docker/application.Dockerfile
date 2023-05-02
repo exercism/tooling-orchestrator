@@ -11,7 +11,7 @@ ENV RACK_ENV=production
 
 COPY Gemfile Gemfile.lock ./
 
-RUN gem install bundler:2.1.4 && \
+RUN gem install bundler:2.4.12 && \
     bundle config set deployment 'true' && \
     bundle config set without 'development test' && \
     bundle install
