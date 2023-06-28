@@ -17,6 +17,5 @@ module Orchestrator
     def requeue_job!(job_id)
       RequeueJob.(job_id)
     end
-
   end
 end

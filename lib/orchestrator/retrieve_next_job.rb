@@ -10,7 +10,7 @@ module Orchestrator
       return unless job_id && !job_id.empty?
 
       begin
-        # TODO - change this to a zset where the "score" is the time it should be rerun.
+        # TODO: - change this to a zset where the "score" is the time it should be rerun.
         redis.rpush(locked_key, job_id)
         Exercism::ToolingJob.find(job_id)
       rescue StandardError
