@@ -1,20 +1,18 @@
 module Orchestrator
-  class RetrieveNextJob
+  class RequeueJob
     include Mandate
+    initialize_with :job_id
 
     def call
       queued_key = Exercism::ToolingJob.key_for_queued
       locked_key = Exercism::ToolingJob.key_for_locked
 
-      job_id = redis.lpop(queued_key)
-      return unless job_id && !job_id.empty?
-
+      # Remove job from the locked queue
+      # then add it back to the normal one
       begin
-        # TODO - change this to a zset where the "score" is the time it should be rerun.
-        redis.rpush(locked_key, job_id)
-        Exercism::ToolingJob.find(job_id)
-      rescue StandardError
+        redis.del(locked_key, job_id)
         redis.lpush(queued_key, job_id)
+      rescue StandardError
         nil
       end
     end
@@ -25,3 +23,5 @@ module Orchestrator
     end
   end
 end
+
+

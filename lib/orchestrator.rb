@@ -6,6 +6,7 @@ require 'mandate'
 require 'rest-client'
 require 'singleton'
 require 'exercism-config'
+require 'redis'
 
 require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem
