@@ -2,5 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 echo "HERE"
-pretty-quick --staged
-./bin/rubocop-quick
+yarn pretty-quick --staged
+bin/rubocop-quick
