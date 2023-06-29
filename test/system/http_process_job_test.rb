@@ -15,7 +15,7 @@ module Orchestrator
         },
         anything
       )
-      patch "/jobs/#{job_id}", status: status, output: output
+      patch("/jobs/#{job_id}", status:, output:)
 
       assert_equal 200, last_response.status
       assert_equal('{}', last_response.body)

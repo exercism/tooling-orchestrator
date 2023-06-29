@@ -13,5 +13,9 @@ module Orchestrator
     def process_job!(job_id, data)
       ProcessJob.(job_id, data)
     end
+
+    def requeue_job!(job_id)
+      RequeueJob.(job_id)
+    end
   end
 end

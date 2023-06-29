@@ -14,9 +14,9 @@ module Orchestrator
       expected = {
         type: job_type,
         id: job_id,
-        language: language,
-        exercise: exercise,
-        source: source,
+        language:,
+        exercise:,
+        source:,
         container_version: nil,
         timeout: nil
       }

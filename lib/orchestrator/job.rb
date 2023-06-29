@@ -16,11 +16,11 @@ module Orchestrator
 
     def to_h
       {
-        id: id,
-        type: type,
-        language: language,
-        exercise: exercise,
-        source: source,
+        id:,
+        type:,
+        language:,
+        exercise:,
+        source:,
         container_version: nil,
         timeout: nil
       }

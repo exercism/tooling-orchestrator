@@ -1,7 +1,7 @@
 #############
 ## Stage 1 ##
 #############
-FROM ruby:2.6.6-alpine3.12
+FROM ruby:3.2.1-alpine3.12
 
 RUN apk add --no-cache --update build-base cmake
 
@@ -11,7 +11,7 @@ ENV RACK_ENV=production
 
 COPY Gemfile Gemfile.lock ./
 
-RUN gem install bundler:2.1.4 && \
+RUN gem install bundler:2.4.12 && \
     bundle config set deployment 'true' && \
     bundle config set without 'development test' && \
     bundle install

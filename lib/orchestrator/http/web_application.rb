@@ -37,6 +37,13 @@ module Orchestrator
         json({})
       end
 
+      patch '/jobs/:id/requeue' do
+        log("Requeuing job ##{params[:id]}")
+
+        application.requeue_job!(params[:id])
+        json({})
+      end
+
       private
       def application
         Orchestrator.application
