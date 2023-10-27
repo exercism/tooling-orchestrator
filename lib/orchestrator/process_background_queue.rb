@@ -4,7 +4,7 @@ module Orchestrator
   class ProcessBackgroundQueue
     include Mandate
 
-    MAX_QUEUE_LENGTH = 4
+    MAX_QUEUE_LENGTH = 25
 
     def call
       $stdout.sync = true
@@ -33,6 +33,11 @@ module Orchestrator
     end
 
     def execute
+      if redis.llen(Exercism::ToolingJob.key_for_queued_for_background_processing).zero?
+        sleep(1)
+        return
+      end
+
       count = MAX_QUEUE_LENGTH - redis.llen(Exercism::ToolingJob.key_for_queued)
 
       # This can be zero or a negative number
@@ -44,7 +49,7 @@ module Orchestrator
       count.times do
         # Note - this isn't in a transaction, so things could potentially get lost here
         id = redis.lpop(Exercism::ToolingJob.key_for_queued_for_background_processing)
-        redis.rpush(Exercism::ToolingJob.key_for_queued, id)
+        redis.rpush(Exercism::ToolingJob.key_for_queued, id) if id
       end
     end
 

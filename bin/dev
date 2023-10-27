@@ -1,3 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env ruby
 
-rackup -p 3021
+require "bundler/setup"
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+
+require "orchestrator"
+
+puts "Starting ToolingOrchestrator::Worker..."
+STDOUT.flush
+
+Thread.new do
+  Orchestrator::ProcessBackgroundQueue.()
+end
+
+`rackup -p 3021`
