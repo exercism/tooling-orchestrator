@@ -45,14 +45,8 @@ module Orchestrator
       end
 
       private
-      def application
-        p "!!!!"
-        Orchestrator.application
-      end
-
-      def log(*args)
-        application.log(*args)
-      end
+      def application = Orchestrator.application
+      def log(*args)= application.log(*args)
     end
   end
 end
