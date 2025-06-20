@@ -1,3 +1,12 @@
+PATH
+  remote: ../config
+  specs:
+    exercism-config (0.121.0)
+      aws-sdk-dynamodb (~> 1.0)
+      aws-sdk-secretsmanager (~> 1.0)
+      mandate
+      zeitwerk
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -25,15 +34,10 @@ GEM
     aws-sigv4 (1.5.2)
       aws-eventstream (~> 1, >= 1.0.2)
     concurrent-ruby (1.2.2)
-    connection_pool (2.4.1)
+    connection_pool (2.5.3)
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    exercism-config (0.102.0)
-      aws-sdk-dynamodb (~> 1.0)
-      aws-sdk-secretsmanager (~> 1.0)
-      mandate
-      zeitwerk
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
@@ -66,10 +70,15 @@ GEM
       rack (>= 1.3)
     rainbow (3.1.1)
     rake (13.0.6)
-    redis (5.0.6)
-      redis-client (>= 0.9.0)
-    redis-client (0.14.1)
+    redis (5.4.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.25.0)
       connection_pool
+    redis-cluster-client (0.13.5)
+      redis-client (~> 0.24)
+    redis-clustering (5.4.0)
+      redis (= 5.4.0)
+      redis-cluster-client (>= 0.10.0)
     regexp_parser (2.8.1)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -128,7 +137,7 @@ DEPENDENCIES
   aws-sdk-dynamodb (~> 1.51)
   aws-sdk-s3
   concurrent-ruby
-  exercism-config (>= 0.80.0)
+  exercism-config!
   mandate
   minitest
   mocha
@@ -136,7 +145,8 @@ DEPENDENCIES
   puma
   rack-test
   rake
-  redis
+  redis (~> 5.1)
+  redis-clustering (~> 5.1)
   rest-client
   rubocop
   rubocop-minitest

@@ -13,9 +13,9 @@ module Orchestrator
         # TODO: - change this to a zset where the "score" is the time it should be rerun.
         redis.rpush(locked_key, job_id)
         Exercism::ToolingJob.find(job_id)
-      rescue StandardError
-        redis.lpush(queued_key, job_id)
-        nil
+        # rescue StandardError
+        #   redis.lpush(queued_key, job_id)
+        #   nil
       end
     end
 
