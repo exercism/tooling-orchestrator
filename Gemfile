@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 ruby '3.4.4'
 
 gem "rake"
+gem 'base64'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'concurrent-ruby'

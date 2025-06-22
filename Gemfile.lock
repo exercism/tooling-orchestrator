@@ -147,6 +147,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk-dynamodb (~> 1.51)
   aws-sdk-s3
+  base64
   concurrent-ruby
   exercism-config (>= 0.124.0)
   mandate
