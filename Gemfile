@@ -9,6 +9,7 @@ gem 'ostruct'
 gem 'nokogiri'
 
 gem "rake"
+gem 'rackup'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'concurrent-ruby'
