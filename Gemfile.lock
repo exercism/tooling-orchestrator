@@ -1,12 +1,3 @@
-PATH
-  remote: ../config
-  specs:
-    exercism-config (0.122.0)
-      aws-sdk-dynamodb (~> 1.0)
-      aws-sdk-secretsmanager (~> 1.0)
-      mandate
-      zeitwerk
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -38,6 +29,11 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    exercism-config (0.124.0)
+      aws-sdk-dynamodb (~> 1.0)
+      aws-sdk-secretsmanager (~> 1.0)
+      mandate
+      zeitwerk
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
@@ -137,7 +133,7 @@ DEPENDENCIES
   aws-sdk-dynamodb (~> 1.51)
   aws-sdk-s3
   concurrent-ruby
-  exercism-config!
+  exercism-config (>= 0.124.0)
   mandate
   minitest
   mocha
@@ -156,6 +152,9 @@ DEPENDENCIES
   sinatra-contrib
   timecop
   zeitwerk
+
+RUBY VERSION
+   ruby 3.4.4p34
 
 BUNDLED WITH
    2.4.12
