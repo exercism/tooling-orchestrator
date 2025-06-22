@@ -32,7 +32,7 @@ GEM
     connection_pool (2.5.3)
     docile (1.4.1)
     domain_name (0.6.20240107)
-    exercism-config (0.124.0)
+    exercism-config (0.126.0)
       aws-sdk-dynamodb (~> 1.0)
       aws-sdk-secretsmanager (~> 1.0)
       mandate
@@ -162,7 +162,7 @@ DEPENDENCIES
   base64
   bigdecimal
   concurrent-ruby
-  exercism-config (>= 0.124.0)
+  exercism-config (>= 0.126.0)
   mandate
   minitest
   mocha
