@@ -24,6 +24,7 @@ gem 'exercism-config', '>= 0.124.0'
 # gem 'exercism-config', path: '../config'
 
 group :development, :test do
+  gem 'mutex_m'
   gem 'parallel'
   gem 'rack-test'
   gem 'rubocop'
