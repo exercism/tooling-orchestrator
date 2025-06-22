@@ -1,7 +1,7 @@
 #############
 ## Stage 1 ##
 #############
-FROM ruby:3.2.1-alpine3.12
+FROM ruby:3.4.4-alpine3.22
 
 RUN apk add --no-cache --update build-base cmake
 
