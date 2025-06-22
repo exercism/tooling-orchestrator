@@ -2,8 +2,13 @@ source 'https://rubygems.org'
 
 ruby '3.4.4'
 
-gem "rake"
+# Deprecated stdlib gems
 gem 'base64'
+gem 'bigdecimal'
+gem 'ostruct'
+gem 'nokogiri'
+
+gem "rake"
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'concurrent-ruby'
