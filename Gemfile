@@ -3,9 +3,7 @@ source 'https://rubygems.org'
 ruby '3.4.4'
 
 gem "rake"
-gem "mocha"
-gem "minitest"
-gem 'timecop'
+gem 'base64'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'concurrent-ruby'
@@ -27,4 +25,7 @@ group :development, :test do
   gem 'rubocop-minitest'
   gem 'rubocop-performance'
   gem 'simplecov', '~> 0.17.0'
+  gem "mocha"
+  gem "minitest"
+  gem 'timecop'
 end
