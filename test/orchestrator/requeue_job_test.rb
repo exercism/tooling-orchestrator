@@ -4,7 +4,7 @@ module Orchestrator
   class RequeueJobTest < Minitest::Test
     def test_full_flow
       redis = Exercism.redis_tooling_client
-      job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+      job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer")
 
       # Put the job onto the locked queue
       retrieved_job = Orchestrator::RetrieveNextJob.()

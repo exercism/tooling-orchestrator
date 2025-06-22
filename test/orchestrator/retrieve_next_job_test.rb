@@ -3,8 +3,8 @@ require 'test_helper'
 module Orchestrator
   class RetrieveNextJobTest < Minitest::Test
     def test_full_flow
-      job_1 = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
-      Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+      job_1 = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer")
+      Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer")
 
       redis = Exercism.redis_tooling_client
       assert_equal 2, redis.llen(Exercism::ToolingJob.key_for_queued)

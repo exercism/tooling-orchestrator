@@ -3,7 +3,7 @@ require 'test_helper'
 module Orchestrator
   class ProcessJobTest < Minitest::Test
     def test_full_flow
-      job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+      job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer")
 
       status = "really-great"
       output = {
@@ -34,7 +34,7 @@ module Orchestrator
     end
 
     def test_copes_with_missing_data
-      job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer")
+      job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer")
       RestClient.expects(:patch)
       ProcessJob.(
         job.id,
