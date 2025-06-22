@@ -1,14 +1,15 @@
 source 'https://rubygems.org'
 
-git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
-  "https://github.com/#{repo_name}.git"
-end
+ruby '3.4.4'
+
+# Deprecated stdlib gems
+gem 'base64'
+gem 'bigdecimal'
+gem 'ostruct'
+gem 'nokogiri'
 
 gem "rake"
-gem "mocha"
-gem "minitest"
-gem 'timecop'
+gem 'rackup'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'concurrent-ruby'
@@ -17,16 +18,21 @@ gem 'puma'
 gem 'zeitwerk'
 gem 'aws-sdk-dynamodb', '~> 1.51'
 gem 'aws-sdk-s3'
-gem 'redis'
+gem 'redis', '~> 5.1'
+gem 'redis-clustering', '~> 5.1'
 gem 'mandate'
-gem 'exercism-config', '>= 0.80.0'
-# gem 'exercism-config', path: '../exercism_config'
+gem 'exercism-config', '>= 0.124.0'
+# gem 'exercism-config', path: '../config'
 
 group :development, :test do
+  gem 'mutex_m'
   gem 'parallel'
   gem 'rack-test'
   gem 'rubocop'
   gem 'rubocop-minitest'
   gem 'rubocop-performance'
   gem 'simplecov', '~> 0.17.0'
+  gem "mocha"
+  gem "minitest"
+  gem 'timecop'
 end

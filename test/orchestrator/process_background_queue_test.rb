@@ -12,7 +12,8 @@ module Orchestrator
 
     def test_moves_up_to_MAX_QUEUE_LENGTH_things_over # rubocop:disable Naming/MethodName
       (MAX_QUEUE_LENGTH + 5).times do
-        Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer", run_in_background: true)
+        Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer",
+                                     run_in_background: true)
       end
 
       assert_equal 0, redis.llen(Exercism::ToolingJob.key_for_queued)
@@ -28,10 +29,12 @@ module Orchestrator
 
     def test_sets_max_queue_size_as_MAX_QUEUE_LENGTH # rubocop:disable Naming/MethodName
       (MAX_QUEUE_LENGTH + 5).times do
-        Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer", run_in_background: true)
+        Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer",
+                                     run_in_background: true)
       end
       (MAX_QUEUE_LENGTH - 4).times do
-        Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, :ruby, "two-fer", run_in_background: false)
+        Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer",
+                                     run_in_background: false)
       end
 
       assert_equal MAX_QUEUE_LENGTH - 4, redis.llen(Exercism::ToolingJob.key_for_queued)

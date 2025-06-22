@@ -7,6 +7,8 @@ require 'sinatra/json'
 module Orchestrator
   module Http
     class WebApplication < Sinatra::Base
+      set :host_authorization, { permitted_hosts: [] }
+
       # Ping check for ELBs
       get '/' do
         json(ruok: :yes)
@@ -45,13 +47,8 @@ module Orchestrator
       end
 
       private
-      def application
-        Orchestrator.application
-      end
-
-      def log(*args)
-        application.log(*args)
-      end
+      def application = Orchestrator.application
+      def log(*args)= application.log(*args)
     end
   end
 end
