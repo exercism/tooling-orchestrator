@@ -12,7 +12,11 @@ jobs:
 
     services:
       aws:
-        image: "localstack/localstack"
+        # Pinned deliberately. LocalStack's 2026.x line (from 2026.3.0 onwards)
+        # requires a LOCALSTACK_AUTH_TOKEN and exits 55 without one, so the
+        # previously-unpinned :latest broke every build once it floated onto it.
+        # 4.14.0 is the last release that boots unlicensed.
+        image: "localstack/localstack:4.14.0"
         ports:
           - 4566
 
