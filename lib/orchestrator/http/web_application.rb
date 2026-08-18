@@ -22,12 +22,13 @@ module Orchestrator
           log(job.to_h)
           json(job.to_h)
         else
-          log('No jobs found')
+          # Deliberately unlogged. ~99% of polls land here — roughly 3,400 a
+          # minute across the fleet — and "no work right now" is not an event
+          # worth recording. It was the single largest source of log volume.
           status 404
         end
       rescue Aws::DynamoDB::Errors::ResourceNotFoundException
         log("Cannot connect to AWS")
-        log('No jobs found')
         status 500
       end
 
