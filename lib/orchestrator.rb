@@ -10,6 +10,7 @@ require 'redis'
 
 require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem
+loader.inflector.inflect("inform_spi" => "InformSPI")
 loader.setup
 
 module Orchestrator
