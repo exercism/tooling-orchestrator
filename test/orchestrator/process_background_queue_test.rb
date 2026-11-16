@@ -48,6 +48,20 @@ module Orchestrator
       assert_equal MAX_QUEUE_LENGTH + 1, redis.llen(Exercism::ToolingJob.key_for_queued_for_background_processing)
     end
 
+    def test_recovers_a_job_stranded_mid_move
+      id = SecureRandom.uuid
+      queue = Queue.instance
+      redis.rpush(queue.moving_key, id)
+      redis.hset(queue.moving_since_key, id, Time.now.to_f - Configuration::PROMOTION_TIMEOUT_SECONDS - 1)
+
+      cmd = ProcessBackgroundQueue.new
+      cmd.expects(:loop).yields
+      cmd.()
+
+      assert_equal [id], redis.lrange(Exercism::ToolingJob.key_for_queued, 0, -1)
+      assert_equal 0, redis.llen(queue.moving_key)
+    end
+
     def redis
       Exercism.redis_tooling_client
     end

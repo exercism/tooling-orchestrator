@@ -30,6 +30,48 @@ module Orchestrator
     def reports_key = slot_key("reports")
     def taken_key(id) = slot_key("taken:#{id}")
 
+    # Jobs that are queued to run in the background wait on a separate list.
+    # That list and `queued` are in different hash slots, so one command
+    # can't move a job between them. Instead, we move the job to a `moving`
+    # list in the background list's slot, and note the time. Then we add the
+    # job to `queued`, and remove it from `moving`. If we crash part of the
+    # way through, the job is still in `moving`, so it can't be lost.
+    def background_key = Exercism::ToolingJob.key_for_queued_for_background_processing
+    def moving_key = background_slot_key("moving")
+    def moving_since_key = background_slot_key("moving_since")
+    def recovering_key(id) = background_slot_key("recovering:#{id}")
+
+    # This moves the next background job onto the main queue. It returns the
+    # job's id, or nil if there are no background jobs.
+    def promote_from_background
+      id = redis.lmove(background_key, moving_key, :left, :right)
+      return nil unless id
+
+      redis.hset(moving_since_key, id, now)
+      complete_promotion(id)
+      id
+    end
+
+    # This finishes any move interrupted by a crash. If the crash came after
+    # the job reached `queued`, the job will be on the queue twice. Then
+    # either the student will get a duplicate retest, or we will drop the
+    # second copy.
+    #
+    # If we crashed before we noted the time of the move, the job has no
+    # time. We note the time now, so that the job will be recovered later.
+    def recover_promotions
+      ids = redis.lrange(moving_key, 0, -1).uniq
+      return if ids.empty?
+
+      redis.hmget(moving_since_key, *ids).zip(ids).each do |since, id|
+        if since.nil?
+          record_move_time(id)
+        elsif since.to_f <= now - Orchestrator.config.promotion_timeout_seconds && take_recovery(id)
+          complete_promotion(id)
+        end
+      end
+    end
+
     # This takes the next job off the queue, moves it to `leased` and gives
     # it a deadline. It returns the job's id, or nil if the queue is empty.
     def claim
@@ -127,6 +169,28 @@ module Orchestrator
     end
 
     private
+    def complete_promotion(id)
+      redis.rpush(queued_key, id)
+      redis.lrem(moving_key, 1, id)
+      redis.hdel(moving_since_key, id)
+    end
+
+    # Only one orchestrator task can recover each job, so two tasks never add
+    # the same job to `queued` twice.
+    def take_recovery(id)
+      redis.set(recovering_key(id), 1, nx: true, ex: Orchestrator.config.promotion_timeout_seconds)
+    end
+
+    # If the move finished between our reads of `moving` and `moving_since`,
+    # the job is no longer in `moving`, and nothing would ever remove the new
+    # time. So we check, and remove it.
+    def record_move_time(id)
+      redis.hsetnx(moving_since_key, id, now)
+      redis.hdel(moving_since_key, id) if redis.lpos(moving_key, id).nil?
+    end
+
+    def background_slot_key(name) = "{#{background_key}}:#{name}"
+
     # If the job finished between our reads of `leased` and `deadlines`, it
     # is no longer in `leased`, and nothing would ever remove the new
     # deadline. So we check, and remove it.

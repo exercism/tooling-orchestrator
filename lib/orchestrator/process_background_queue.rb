@@ -46,11 +46,10 @@ module Orchestrator
 
       puts "|| Moving #{count} jobs from background queue"
 
-      # In Redis 6.2 we could use the count in lpop
+      # Queue#promote_from_background makes sure that a crash during a move
+      # can't lose the job.
       count.times do
-        # Note - this isn't in a transaction, so things could potentially get lost here
-        id = redis.lpop(Exercism::ToolingJob.key_for_queued_for_background_processing)
-        redis.rpush(Exercism::ToolingJob.key_for_queued, id) if id
+        break unless Queue.instance.promote_from_background
       end
     end
 
