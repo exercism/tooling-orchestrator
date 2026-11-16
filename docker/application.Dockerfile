@@ -19,4 +19,4 @@ RUN gem install bundler:2.4.12 && \
 # copy the source as late as possible to maximize cache
 COPY . .
 
-ENTRYPOINT bundle exec rackup -p 3000 --host 0.0.0.0
+ENTRYPOINT bundle exec puma -C config/puma.rb -b tcp://0.0.0.0:3000

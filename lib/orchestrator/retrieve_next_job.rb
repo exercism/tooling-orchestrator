@@ -2,8 +2,14 @@ module Orchestrator
   class RetrieveNextJob
     include Mandate
 
+    # If the queue is empty and there is a wait, this waits up to that many
+    # seconds for a job to arrive.
+    def initialize(wait: 0)
+      @wait = wait
+    end
+
     def call
-      job_id = queue.claim
+      job_id = queue.claim(wait:)
       return if job_id.nil? || job_id.empty?
 
       job = find_job(job_id)
@@ -31,6 +37,8 @@ module Orchestrator
     end
 
     private
+    attr_reader :wait
+
     # When the job's data is missing, ToolingJob.find raises a TypeError. If
     # anything else goes wrong (for example, if we can't reach Redis), we
     # raise the error as normal, and the job's lease will bring the job back.

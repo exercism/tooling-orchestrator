@@ -2,8 +2,24 @@ require 'singleton'
 
 module Orchestrator
   # This class holds the settings for handing out jobs and taking them back.
+  # config/puma.rb also reads this file, to decide how many requests Puma can
+  # handle at once.
   class Configuration
     include Singleton
+
+    # An invoker can wait at most this many seconds for a job. The load
+    # balancer and nginx close a connection after 60 idle seconds, so this
+    # leaves plenty of room.
+    MAX_WAIT = 20
+
+    # At most this many invokers can wait for a job at once in each process.
+    # Each one ties up a Puma thread and a Redis connection while it waits.
+    LONG_POLL_POOL_SIZE = 32
+
+    # Puma has this many threads on top of LONG_POLL_POOL_SIZE. Invokers that
+    # are sending results then never queue behind invokers that are waiting.
+    SPARE_THREADS = 8
+    PUMA_THREADS = LONG_POLL_POOL_SIZE + SPARE_THREADS
 
     # An invoker has this many seconds to report a job's result. After that,
     # the orchestrator assumes that the machine has died, and puts the job
@@ -40,6 +56,8 @@ module Orchestrator
     PROMOTION_TIMEOUT_SECONDS = 30
 
     # These readers return the values above, so tests can stub them.
+    def max_wait = MAX_WAIT
+    def long_poll_pool_size = LONG_POLL_POOL_SIZE
     def lease_seconds = LEASE_SECONDS
     def max_reclaims = MAX_RECLAIMS
     def retry_seconds = RETRY_SECONDS
