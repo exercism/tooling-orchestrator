@@ -1,0 +1,30 @@
+# The soak test runs the real orchestrator against a three-node Valkey
+# cluster. See "The soak test proves that no job is lost" in the README.
+x-valkey: &valkey
+  image: valkey/valkey:8.1
+  command: valkey-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --save "" --appendonly no
+
+services:
+  valkey-1: *valkey
+  valkey-2: *valkey
+  valkey-3: *valkey
+
+  soak:
+    image: ruby:3.4.4
+    working_dir: /work
+    volumes:
+      - ..:/work
+      - bundle:/usr/local/bundle
+    environment:
+      - SOAK_MODE
+      - SOAK_SEED
+      - SOAK_JOBS
+      - SOAK_REDIS_NODES=valkey-1:6379,valkey-2:6379,valkey-3:6379
+    depends_on:
+      - valkey-1
+      - valkey-2
+      - valkey-3
+    command: bash -c "bundle install --quiet && bundle exec ruby soak/run.rb"
+
+volumes:
+  bundle: {}

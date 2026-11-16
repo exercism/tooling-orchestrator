@@ -1,0 +1,33 @@
+name: Soak test
+
+on:
+  push:
+    branches: [main]
+  # This workflow runs on PRs into any branch, so stacked PRs get it too.
+  pull_request:
+
+jobs:
+  soak:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # The short CI run uses a fixed seed, so the same failures happen in
+      # the same order on every run.
+      - name: Run the soak test
+        env:
+          SOAK_MODE: ci
+        run: docker compose -f soak/docker-compose.yml run --rm soak
+
+      - name: Keep the logs of a failed run
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soak-logs
+          path: soak/tmp/logs
+
+      - name: Stop the containers
+        if: always()
+        run: docker compose -f soak/docker-compose.yml down -v
