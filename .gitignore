@@ -1,3 +1,6 @@
 # Cache used for docker
 .cache
 node_modules/
+
+# The soak test writes its logs here (see the README).
+soak/tmp/
