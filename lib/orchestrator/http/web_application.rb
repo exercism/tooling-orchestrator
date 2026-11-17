@@ -15,8 +15,11 @@ module Orchestrator
         status 200
       end
 
+      # An invoker can add ?wait=<seconds> to wait for the next job, so that
+      # it doesn't need to keep asking. Without it, this answers straight
+      # away, as it always has.
       get '/jobs/next' do
-        job = application.lock_next_job!
+        job = application.lock_next_job!(wait: requested_wait)
         if job
           log("Found job #{job}")
           log(job.to_h)
@@ -48,6 +51,14 @@ module Orchestrator
       end
 
       private
+      # If the wait isn't a positive number, this treats it as no wait.
+      def requested_wait
+        wait = Float(params[:wait], exception: false)
+        return 0 unless wait&.finite?
+
+        wait.clamp(0, Orchestrator.config.max_wait)
+      end
+
       def application = Orchestrator.application
       def log(*args)= application.log(*args)
     end

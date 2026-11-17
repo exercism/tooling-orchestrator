@@ -6,8 +6,8 @@ module Orchestrator
       puts "** #{msg}"
     end
 
-    def lock_next_job!
-      RetrieveNextJob.()
+    def lock_next_job!(wait: 0)
+      RetrieveNextJob.(wait:)
     end
 
     def process_job!(job_id, data)

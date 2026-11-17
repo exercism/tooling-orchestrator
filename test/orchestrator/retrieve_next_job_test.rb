@@ -21,6 +21,24 @@ module Orchestrator
       assert_nil RetrieveNextJob.()
     end
 
+    def test_waits_for_a_job_to_arrive
+      job_id = SecureRandom.uuid
+      Thread.new do
+        sleep(0.3)
+        Exercism::ToolingJob.create!(job_id, :test_runner, "123", "", :ruby, "two-fer")
+      end
+
+      assert_equal job_id, RetrieveNextJob.(wait: 5).id
+      assert Queue.instance.deadline(job_id)
+    end
+
+    def test_gives_up_after_the_wait
+      started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+      assert_nil RetrieveNextJob.(wait: 0.5)
+      assert_operator Process.clock_gettime(Process::CLOCK_MONOTONIC) - started, :>=, 0.5
+    end
+
     def test_drops_a_job_if_its_data_has_gone
       redis.rpush(Exercism::ToolingJob.key_for_queued, "missing")
       job = Exercism::ToolingJob.create!(SecureRandom.uuid, :test_runner, "123", "", :ruby, "two-fer")

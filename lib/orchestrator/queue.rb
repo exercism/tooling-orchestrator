@@ -1,6 +1,11 @@
+require 'connection_pool'
+
 module Orchestrator
   # This class hands jobs to invokers and puts them back on the queue if the
   # machine that is running them dies.
+  #
+  # It also lets an invoker wait for the next job, so that invokers don't
+  # need to keep asking.
   #
   # The website adds each job to the `queued` list (see Exercism::ToolingJob).
   # When an invoker takes a job, we move the job to the `leased` list and give
@@ -11,8 +16,8 @@ module Orchestrator
   # The queue runs on clustered Valkey. There, one command can only touch
   # several keys if they are in the same hash slot. We start the name of each
   # key added here with "{<queued>}", which puts it in the same slot as
-  # `queued`. Then LMOVE can move a job from `queued` to `leased` in one step,
-  # so a crash can't lose it. The website's key keeps its name.
+  # `queued`. Then LMOVE and BLMOVE can move a job from `queued` to `leased`
+  # in one step, so a crash can't lose it. The website's key keeps its name.
   class Queue
     include Singleton
 
@@ -22,6 +27,10 @@ module Orchestrator
     # website treats it like any other ops error, so the student sees an
     # error.
     RECLAIMS_EXHAUSTED_STATUS = 514
+
+    # If no Redis connection is free for waiting within this many seconds,
+    # we answer the request straight away.
+    BLOCKING_CHECKOUT_TIMEOUT = 0.05
 
     def queued_key = Exercism::ToolingJob.key_for_queued
     def leased_key = slot_key("leased")
@@ -73,9 +82,12 @@ module Orchestrator
     end
 
     # This takes the next job off the queue, moves it to `leased` and gives
-    # it a deadline. It returns the job's id, or nil if the queue is empty.
-    def claim
+    # it a deadline. If the queue is empty and there is a wait, this waits up
+    # to that many seconds for a job to arrive. It returns the job's id, or
+    # nil if no job is available.
+    def claim(wait: 0)
       id = redis.lmove(queued_key, leased_key, :left, :right)
+      id ||= wait_for_job(wait) if wait.positive?
       start_deadline(id) if id
       id
     end
@@ -169,6 +181,27 @@ module Orchestrator
     end
 
     private
+    # BLMOVE waits for a job and moves it to `leased` in one step. Waiting
+    # invokers each hold a Redis connection for the whole wait, so they get a
+    # pool of their own. If they shared the main pool, results and requeues
+    # would queue behind them.
+    def wait_for_job(wait)
+      blocking_pool.with(timeout: BLOCKING_CHECKOUT_TIMEOUT) do |redis|
+        redis.blmove(queued_key, leased_key, :left, :right, timeout: wait)
+      end
+    rescue ConnectionPool::TimeoutError
+      nil
+    end
+
+    def blocking_pool
+      BLOCKING_POOL_MUTEX.synchronize do
+        @blocking_pool ||= ConnectionPool.new(size: Orchestrator.config.long_poll_pool_size) do
+          Exercism.redis_client(Exercism.config.tooling_redis_url)
+        end
+      end
+    end
+    BLOCKING_POOL_MUTEX = Mutex.new
+
     def complete_promotion(id)
       redis.rpush(queued_key, id)
       redis.lrem(moving_key, 1, id)
