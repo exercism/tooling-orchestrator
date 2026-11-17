@@ -9,6 +9,9 @@ module Orchestrator
   # Otherwise the machine that was running the job has probably died, so we
   # put the job back on the queue. If it has gone back too many times, we
   # give up and fail it.
+  #
+  # It also finishes any move of a background job interrupted by a crash
+  # (see Queue#recover_promotions).
   class RecoverStrandedJobs
     include Mandate
 
@@ -19,6 +22,7 @@ module Orchestrator
 
     def call
       recover_jobs_out_of_time
+      queue.recover_promotions
     end
 
     private

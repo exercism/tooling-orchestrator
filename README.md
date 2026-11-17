@@ -36,4 +36,6 @@ Invokers ask for work with `GET /jobs/next`.
 
 When an invoker takes a job, the orchestrator gives the job a deadline, called a lease. If the invoker doesn't report a result before the deadline, the orchestrator assumes that the machine has died, and puts the job back on the queue for another machine. If a job goes back on the queue too many times, the orchestrator gives up and marks it as failed, with status 514 ("gave up after repeated attempts"). If the call to tell the website about a result fails, the background process will keep retrying it until the website has the result. The invoker's README lists the other status codes. `lib/orchestrator/queue.rb` explains how this works.
 
+Jobs that are queued to run in the background wait on a separate list. To move one onto the main queue, the background process first moves it to a `moving` list, then adds it to the main queue, then removes it from `moving`. If the orchestrator crashes part of the way through, the job is still in `moving`, and after 30 seconds the background process will finish the move.
+
 `lib/orchestrator/configuration.rb` holds the settings, such as the length of the deadline, as constants.

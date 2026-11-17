@@ -34,11 +34,17 @@ module Orchestrator
     # deadline this many seconds away.
     DEADLINE_GRACE_SECONDS = 30
 
+    # If a background job is still in the `moving` list after this many
+    # seconds, the process that was moving it has died. The background process
+    # then finishes the move.
+    PROMOTION_TIMEOUT_SECONDS = 30
+
     # These readers return the values above, so tests can stub them.
     def lease_seconds = LEASE_SECONDS
     def max_reclaims = MAX_RECLAIMS
     def retry_seconds = RETRY_SECONDS
     def max_report_attempts = MAX_REPORT_ATTEMPTS
     def deadline_grace_seconds = DEADLINE_GRACE_SECONDS
+    def promotion_timeout_seconds = PROMOTION_TIMEOUT_SECONDS
   end
 end
