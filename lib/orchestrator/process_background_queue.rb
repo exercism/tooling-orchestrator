@@ -24,6 +24,7 @@ module Orchestrator
         break if should_exit
 
         sleep(0.1)
+        recover_stranded_jobs
         execute
       rescue StandardError => e
         # If stuff goes wrong should we abort the machine
@@ -51,6 +52,13 @@ module Orchestrator
         id = redis.lpop(Exercism::ToolingJob.key_for_queued_for_background_processing)
         redis.rpush(Exercism::ToolingJob.key_for_queued, id) if id
       end
+    end
+
+    def recover_stranded_jobs
+      RecoverStrandedJobs.()
+    rescue StandardError => e
+      # A problem here mustn't stop jobs moving off the background queue.
+      puts "|| Could not put stranded jobs back on the queue: #{e.message}"
     end
 
     memoize
